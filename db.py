@@ -85,7 +85,7 @@ class MiniatureDB(object):
     def __init__(self):
         self._minis = []
         maker_prefix = 'Make'
-        for make_name, make_method in [ x for x in MiniatureDB.__dict__.items() if x[0].startswith(maker_prefix)]:
+        for make_name, make_method in [x for x in MiniatureDB.__dict__.items() if x[0].startswith(maker_prefix)]:
             kind = _ToSnakeCase(make_name[len(maker_prefix):])
             index = 0
             for mini in make_method():
