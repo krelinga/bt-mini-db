@@ -12,6 +12,7 @@ class PaintScheme(Enum):
     UNPAINTED = 'unpainted'
     WOLF_FROM_EBAY = 'wolf_from_ebay'
     GREEN_AND_BLACK_GENCON_2018 = 'green_and_black_gencon_2018'
+    RED_BASIC = 'red_basic'
 
 
 class Built(Enum):
@@ -82,6 +83,12 @@ class MiniatureDB(object):
             paint=PaintScheme.UNPAINTED,
             built=Built.NO)
 
+    def MakeAtlas():
+        yield Miniature(  # 0
+            material=Material.PLASTIC,
+            paint=PaintScheme.RED_BASIC,
+            built=Built.YES)
+
     def __init__(self):
         self._minis = []
         maker_prefix = 'Make'
@@ -100,6 +107,7 @@ minis = MiniatureDB()
 print(minis.mad_cat_0)
 print(minis.mad_cat_1)
 print(minis.vulture_0)
+print(minis.atlas_0)
 
 
 def _FormatOrNone(fmt, value):
