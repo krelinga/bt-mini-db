@@ -140,8 +140,7 @@ class AlphaStrikeUnitTemplate(object):
         self._sz = sz
         self._mv = mv
         self._mvj = mvj
-#        if role is not None:
-#            self.role = role
+        self._role = role
 #        if ds is not None:
 #            self.ds = ds
 #        if dm is not None:
@@ -198,6 +197,10 @@ class AlphaStrikeUnitTemplate(object):
             return evaluated
         return 0
 
+    @property
+    def role(self):
+        return self._resolve('_role')
+
     def __str__(self):
         parts = [
             ('name', '"%s"'),
@@ -207,6 +210,7 @@ class AlphaStrikeUnitTemplate(object):
             ('sz', '%d'),
             ('mv', '%d'),
             ('mvj', '%d'),
+            ('role', '%s'),
         ]
         parts_strs = ['%s: %s' % (x[0], _FormatOrNone(x[1], self.__getattribute__(x[0]))) for x in parts]
         return "{ %s }" % '\t'.join(parts_strs)
@@ -229,6 +233,7 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
         if self.mv is None:
             raise Error('mv must be specified')
         # self.mvj can be None, it has a default value.
+        # self.role can be None, it isn't required.  Or ... even supported for now ;-).
 
 
 mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10)
