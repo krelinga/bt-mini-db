@@ -138,8 +138,7 @@ class AlphaStrikeUnitTemplate(object):
         self._pv = pv
         self._tp = tp
         self._sz = sz
-#        if mv is not None:
-#            self.mv = mv
+        self._mv = mv
 #        if mvj is not None:
 #            self.mvj = mvj
 #        if role is not None:
@@ -189,6 +188,10 @@ class AlphaStrikeUnitTemplate(object):
     def sz(self):
         return self._resolve('_sz')
 
+    @property
+    def mv(self):
+        return self._resolve('_mv')
+
     def __str__(self):
         parts = [
             ('name', '"%s"'),
@@ -196,6 +199,7 @@ class AlphaStrikeUnitTemplate(object):
             ('pv', '%d'),
             ('tp', '%s'),
             ('sz', '%d'),
+            ('mv', '%d'),
         ]
         parts_strs = ['%s: %s' % (x[0], _FormatOrNone(x[1], self._resolve('_%s' % x[0]))) for x in parts]
         return "{ %s }" % '\t'.join(parts_strs)
@@ -215,9 +219,11 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
             raise Error('tp must be specified and must be of type AlphaStrikeUnitType')
         if self.sz is None:
             raise Error('sz must be specified')
+        if self.mv is None:
+            raise Error('mv must be specified')
 
 
-mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3)
+mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10)
 print('%s' % mad_cat_tmpl)
 mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54)
 print('%s' % mad_cat_unit)
