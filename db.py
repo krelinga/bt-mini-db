@@ -67,6 +67,12 @@ def _ToSnakeCase(camel_case):
 
 
 class MiniatureDB(object):
+    def MakeAtlas():
+        yield Miniature(  # 0
+            material=Material.PLASTIC,
+            paint=PaintScheme.RED_BASIC,
+            built=Built.YES)
+
     def MakeMadCat():
         yield Miniature(  # 0
             material=Material.METAL,
@@ -82,12 +88,6 @@ class MiniatureDB(object):
             material=Material.METAL,
             paint=PaintScheme.UNPAINTED,
             built=Built.NO)
-
-    def MakeAtlas():
-        yield Miniature(  # 0
-            material=Material.PLASTIC,
-            paint=PaintScheme.RED_BASIC,
-            built=Built.YES)
 
     def __init__(self):
         self._minis = []
