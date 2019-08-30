@@ -144,10 +144,8 @@ class AlphaStrikeUnitTemplate(object):
         self._ds = ds
         self._dm = dm
         self._dl = dl
-#        if de is not None:
-#            self.de = de
-#        if ov is not None:
-#            self.ov = ov
+        self._de = de
+        self._ov = ov
 #        if a is not None:
 #            self.a = a
 #        if s is not None:
@@ -210,6 +208,17 @@ class AlphaStrikeUnitTemplate(object):
     def dl(self):
         return self._resolve('_dl')
 
+    @property
+    def de(self):
+        return self._resolve('_de')
+
+    @property
+    def ov(self):
+        evaluated = self._resolve('_ov')
+        if evaluated is not None:
+            return evaluated
+        return 0
+
     def __str__(self):
         parts = [
             ('name', '"%s"'),
@@ -223,6 +232,8 @@ class AlphaStrikeUnitTemplate(object):
             ('ds', '%d'),
             ('dm', '%d'),
             ('dl', '%d'),
+            ('de', '%d'),
+            ('ov', '%d'),
         ]
         parts_strs = ['%s: %s' % (x[0], _FormatOrNone(x[1], self.__getattribute__(x[0]))) for x in parts]
         return "{ %s }" % '\t'.join(parts_strs)
@@ -249,9 +260,11 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
         # self.ds can be None, which would mean no damage in that range bracket.
         # self.dm can be None, which would mean no damage in that range bracket.
         # self.dl can be None, which would mean no damage in that range bracket.
+        # self.de can be None, which would mean no damage in that range bracket.
+        # self.ov can be None, it has a default value.
 
 
 mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10)
 print('%s' % mad_cat_tmpl)
-mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54, ds=5, dm=5, dl=4)
+mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54, ds=5, dm=5, dl=4, ov=1)
 print('%s' % mad_cat_unit)
