@@ -83,6 +83,12 @@ class MiniatureDB(object):
             paint=PaintScheme.GREEN_AND_BLACK_GENCON_2018,
             built=Built.YES)
 
+    def MakeRaven():
+        yield Miniature(  # 0
+            material=Material.PLASTIC,
+            paint=PaintScheme.UNPAINTED,
+            built=Built.YES)
+
     def MakeVulture():
         yield Miniature(  # 0
             material=Material.METAL,
@@ -108,6 +114,7 @@ print(minis.mad_cat_0)
 print(minis.mad_cat_1)
 print(minis.vulture_0)
 print(minis.atlas_0)
+print(minis.raven_0)
 
 
 def _FormatOrNone(fmt, value):
