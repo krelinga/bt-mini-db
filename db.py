@@ -147,8 +147,7 @@ class AlphaStrikeUnitTemplate(object):
         self._de = de
         self._ov = ov
         self._a = a
-#        if s is not None:
-#            self.s = s
+        self._s = s
 #        if specials is not None:
 #            self.specials = specials
 
@@ -222,6 +221,10 @@ class AlphaStrikeUnitTemplate(object):
     def a(self):
         return self._resolve('_a')
 
+    @property
+    def s(self):
+        return self._resolve('_s')
+
     def __str__(self):
         parts = [
             ('name', '"%s"'),
@@ -238,6 +241,7 @@ class AlphaStrikeUnitTemplate(object):
             ('de', '%d'),
             ('ov', '%d'),
             ('a', '%d'),
+            ('s', '%d'),
         ]
         parts_strs = ['%s: %s' % (x[0], _FormatOrNone(x[1], self.__getattribute__(x[0]))) for x in parts]
         return "{ %s }" % '\t'.join(parts_strs)
@@ -268,9 +272,11 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
         # self.ov can be None, it has a default value.
         if self.a is None:
             raise Error('a must be specified')
+        if self.s is None:
+            raise Error('s must be specified')
 
 
-mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10, a=8)
+mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10, a=8, s=4)
 print('%s' % mad_cat_tmpl)
 mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54, ds=5, dm=5, dl=4, ov=1)
 print('%s' % mad_cat_unit)
