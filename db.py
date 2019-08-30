@@ -3,6 +3,9 @@
 from enum import Enum
 
 
+import specials
+
+
 class Material(Enum):
     PLASTIC = 'plastic'
     METAL = 'metal'
@@ -130,7 +133,7 @@ class AlphaStrikeUnitType(Enum):
 class AlphaStrikeUnitTemplate(object):
     def __init__(self, template=None, name=None, model=None, pv=None, tp=None,
                  sz=None, mv=None, mvj=None, role=None, ds=None, dm=None,
-                 dl=None, de=None, ov=None, a=None, s=None, specials=None):
+                 dl=None, de=None, ov=None, a=None, s=None, specials=()):
         self._template = template
 
         self._name = name
@@ -148,8 +151,7 @@ class AlphaStrikeUnitTemplate(object):
         self._ov = ov
         self._a = a
         self._s = s
-#        if specials is not None:
-#            self.specials = specials
+        self._specials = specials
 
     def _resolve(self, prop):
         self_val = self.__dict__.get(prop)
@@ -225,6 +227,15 @@ class AlphaStrikeUnitTemplate(object):
     def s(self):
         return self._resolve('_s')
 
+    @property
+    def specials(self):
+        found = []
+        if self._template is not None:
+            found.extend(self._template._specials)
+        if self._specials is not None:
+            found.extend(self._specials)
+        return found
+
     def __str__(self):
         parts = [
             ('name', '"%s"'),
@@ -242,6 +253,7 @@ class AlphaStrikeUnitTemplate(object):
             ('ov', '%d'),
             ('a', '%d'),
             ('s', '%d'),
+            ('specials', '%s'),
         ]
         parts_strs = ['%s: %s' % (x[0], _FormatOrNone(x[1], self.__getattribute__(x[0]))) for x in parts]
         return "{ %s }" % '\t'.join(parts_strs)
@@ -274,9 +286,10 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
             raise Error('a must be specified')
         if self.s is None:
             raise Error('s must be specified')
+        # self.specials can be None, it has a default value.
 
 
-mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10, a=8, s=4)
+mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10, a=8, s=4, specials=(specials.CASE, specials.OMNI))
 print('%s' % mad_cat_tmpl)
-mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54, ds=5, dm=5, dl=4, ov=1)
+mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54, ds=5, dm=5, dl=4, ov=1, specials=(specials.IF(2), specials.LRM(1,1,2)))
 print('%s' % mad_cat_unit)
