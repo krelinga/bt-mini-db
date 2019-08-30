@@ -141,8 +141,7 @@ class AlphaStrikeUnitTemplate(object):
         self._mv = mv
         self._mvj = mvj
         self._role = role
-#        if ds is not None:
-#            self.ds = ds
+        self._ds = ds
 #        if dm is not None:
 #            self.dm = dm
 #        if dl is not None:
@@ -201,6 +200,10 @@ class AlphaStrikeUnitTemplate(object):
     def role(self):
         return self._resolve('_role')
 
+    @property
+    def ds(self):
+        return self._resolve('_ds')
+
     def __str__(self):
         parts = [
             ('name', '"%s"'),
@@ -211,6 +214,7 @@ class AlphaStrikeUnitTemplate(object):
             ('mv', '%d'),
             ('mvj', '%d'),
             ('role', '%s'),
+            ('ds', '%d'),
         ]
         parts_strs = ['%s: %s' % (x[0], _FormatOrNone(x[1], self.__getattribute__(x[0]))) for x in parts]
         return "{ %s }" % '\t'.join(parts_strs)
@@ -234,9 +238,10 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
             raise Error('mv must be specified')
         # self.mvj can be None, it has a default value.
         # self.role can be None, it isn't required.  Or ... even supported for now ;-).
+        # self.ds can be None, which would mean no damage in that range bracket.
 
 
 mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10)
 print('%s' % mad_cat_tmpl)
-mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54)
+mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54, ds=5)
 print('%s' % mad_cat_unit)
