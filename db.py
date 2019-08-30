@@ -129,12 +129,8 @@ class AlphaStrikeUnitTemplate(object):
                  dl=None, de=None, ov=None, a=None, s=None, specials=None):
         self._template = template
 
-        self._name = name #if name is not None else None
-        self._model = model #if model is not None else None
-        #if name is not None:
-        #    self._name = name
-#        if model is not None:
-#            self.model = model
+        self._name = name
+        self._model = model
 #        if pv is not None:
 #            self.pv = pv
 #        if tp is not None:
