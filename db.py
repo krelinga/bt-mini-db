@@ -123,6 +123,10 @@ def _FormatOrNone(fmt, value):
     return fmt % value
 
 
+class AlphaStrikeUnitType(Enum):
+    BATTLEMECH = 'bm'
+
+
 class AlphaStrikeUnitTemplate(object):
     def __init__(self, template=None, name=None, model=None, pv=None, tp=None,
                  sz=None, mv=None, mvj=None, role=None, ds=None, dm=None,
@@ -132,8 +136,7 @@ class AlphaStrikeUnitTemplate(object):
         self._name = name
         self._model = model
         self._pv = pv
-#        if tp is not None:
-#            self.tp = tp
+        self._tp = tp
 #        if sz is not None:
 #            self.sz = sz
 #        if mv is not None:
@@ -179,11 +182,16 @@ class AlphaStrikeUnitTemplate(object):
     def pv(self):
         return self._resolve('_pv')
 
+    @property
+    def tp(self):
+        return self._resolve('_tp')
+
     def __str__(self):
         parts = [
             ('name', '"%s"'),
             ('model', '"%s"'),
             ('pv', '%d'),
+            ('tp', '%s'),
         ]
         parts_strs = ['%s: %s' % (x[0], _FormatOrNone(x[1], self._resolve('_%s' % x[0]))) for x in parts]
         return "{ %s }" % '\t'.join(parts_strs)
@@ -199,9 +207,11 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
             raise Error('model must be specified')
         if self.pv is None:
             raise Error('pv must be specified')
+        if self.tp is None or type(self.tp) is not AlphaStrikeUnitType:
+            raise Error('tp must be specified and must be of type AlphaStrikeUnitType')
 
 
-mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat")
+mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH)
 print('%s' % mad_cat_tmpl)
 mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54)
 print('%s' % mad_cat_unit)
