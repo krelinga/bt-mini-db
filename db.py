@@ -288,16 +288,61 @@ class AlphaStrikeUnit(AlphaStrikeUnitTemplate):
             raise Error('s must be specified')
         # self.specials can be None, it has a default value.
 
+        # Will be set by AlphaStrikeUnitDB later.
+        self.key = None
 
-mad_cat_tmpl = AlphaStrikeUnitTemplate(name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10, a=8, s=4, specials=(specials.CASE, specials.OMNI))
-print('%s' % mad_cat_tmpl)
-mad_cat_unit = AlphaStrikeUnit(template=mad_cat_tmpl, model='Prime', pv=54, ds=5, dm=5, dl=4, ov=1, specials=(specials.IF(2), specials.LRM(1,1,2)))
-print('%s' % mad_cat_unit)
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='A', pv=59, ds=7, dm=7, dl=3, ov=1))
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='B', pv=48, ds=4, dm=4, dl=4, specials=(specials.IF(1), )))
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='C', pv=50, ds=4, dm=4, dl=4, specials=(specials.AMS, specials.IF(1), specials.LRM(1,1,1), specials.OVL)))
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='D', pv=51, ds=5, dm=5, dl=3, specials=(specials.REAR(2, 2, None), )))
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='E', pv=53, ds=7, dm=5, dl=4, specials=(specials.LTAG, )))
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='F', pv=54, ds=5, dm=5, dl=4, ov=2, specials=(specials.IF(2), specials.LRM(1,1,2))))
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='H', pv=59, ds=6, dm=6, dl=4, ov=1, specials=(specials.IF(3), )))
-print('%s' % AlphaStrikeUnit(template=mad_cat_tmpl, model='S', pv=54, ds=6, dm=6, dl=2, ov=1, specials=(specials.SRM(3, 3), )))
+    def __str__(self):
+        return '{ key:\t%s%s' % (_FormatOrNone('%s', self.key), super().__str__()[1:])
+
+
+def _UnitKeySafe(thing):
+    return thing.lower().replace(' ', '_').replace('-', '_')
+
+
+class AlphaStrikeUnitDB(object):
+    def MakeMadCat():
+        tmpl = AlphaStrikeUnitTemplate(
+            name="Mad Cat", tp=AlphaStrikeUnitType.BATTLEMECH, sz=3, mv=10, a=8,
+            s=4, specials=(specials.CASE, specials.OMNI))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='Prime', pv=54, ds=5, dm=5, dl=4,
+                ov=1, specials=(specials.IF(2), specials.LRM(1,1,2)))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='A', pv=59, ds=7, dm=7, dl=3, ov=1)
+        yield AlphaStrikeUnit(
+                template=tmpl, model='B', pv=48, ds=4, dm=4, dl=4, specials=(specials.IF(1), ))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='C', pv=50, ds=4, dm=4, dl=4,
+                specials=(specials.AMS, specials.IF(1), specials.LRM(1,1,1), specials.OVL))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='D', pv=51, ds=5, dm=5, dl=3,
+                specials=(specials.REAR(2, 2, None), ))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='E', pv=53, ds=7, dm=5, dl=4, specials=(specials.LTAG, ))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='F', pv=54, ds=5, dm=5, dl=4,
+                ov=2, specials=(specials.IF(2), specials.LRM(1,1,2)))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='H', pv=59, ds=6, dm=6, dl=4, ov=1,
+                specials=(specials.IF(3), ))
+        yield AlphaStrikeUnit(
+                template=tmpl, model='S', pv=54, ds=6, dm=6, dl=2, ov=1,
+                specials=(specials.SRM(3, 3), ))
+
+    def __init__(self):
+        self._units = []
+        maker_prefix = 'Make'
+        for make_name, make_method in [x for x in AlphaStrikeUnitDB.__dict__.items() if x[0].startswith(maker_prefix)]:
+            for unit in make_method():
+                unit.key = _UnitKeySafe('%s_%s' % (unit.name, unit.model))
+                self._units.append(unit)
+                self.__dict__[unit.key] = unit
+
+    @property
+    def units(self):
+        return self._units
+
+
+db = AlphaStrikeUnitDB()
+for unit in db.units:
+    print("%s" % unit)
